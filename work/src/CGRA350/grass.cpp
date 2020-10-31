@@ -27,6 +27,7 @@ Grass::Grass(Vec3 a, Vec3 b, Vec3 c, Vec3 d, Object* parent)
 
 
 	_vertices = (Vec3*)CGRA_MALLOC(sizeof(Vec3) * VERTICES_SIZE, CGRA350);
+	_glData = (GrassData*)CGRA_MALLOC(sizeof(GrassData) * VERTICES_SIZE * 3, CGRA350); // Vectex, Ew, En
 
 	_vertices[0] = a;
 	_vertices[1] = b;
@@ -67,9 +68,19 @@ void Grass::update()
 	_Ew[1] = cross(_Ee[1], Vec3(0, 1, 0)).normalize();
 	_Ew[2] = cross(_Ee[2], Vec3(0, 1, 0)).normalize();
 
+	_glData[0]._Ew = _Ew[0];
+	_glData[1]._Ew = _Ew[1];
+	_glData[2]._Ew = _Ew[2];
+	_glData[3]._Ew = _Ew[2]; // TODO
+
 	_En[0] = cross(_Ee[0], _Ew[0]).normalize();
 	_En[1] = cross(_Ee[1], _Ew[1]).normalize();
 	_En[2] = cross(_Ee[2], _Ew[2]).normalize();
+
+	_glData[0]._En = _En[0];
+	_glData[1]._En = _En[1];
+	_glData[2]._En = _En[2];
+	_glData[3]._En = _En[2]; // TODO
 
 	for (size_t i = 0; i < VERTICES_SIZE; ++i) {
 		// CGRA_LOGD("[position] %f %f %f", _vertices[i].x, _vertices[i].y, _vertices[i].z);
@@ -176,15 +187,23 @@ void Grass::update()
 		// CGRA_LOGD("after update: vertices %f %f %f", _vertices[i].x, _vertices[i].y, _vertices[i].z);
 	}
 
+	for (size_t i = 0; i < VERTICES_SIZE; ++i) {
+		_glData[i]._vertices = _vertices[i];
+	}
+
 }
 
 void Grass::updateGlData()
 {
 	glBindVertexArray(_VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vec3) * VERTICES_SIZE, _vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vec3), (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GrassData) * VERTICES_SIZE, _glData, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GrassData), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GrassData), (void*)(1 * sizeof(Vec3)));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(GrassData), (void*)(2 * sizeof(Vec3)));
+	glEnableVertexAttribArray(2);
 	glPatchParameteri(GL_PATCH_VERTICES, VERTICES_SIZE);
 	glBindVertexArray(0);
 }

@@ -8,6 +8,12 @@
 
 namespace CGRA350 {
 
+struct GrassData {
+	Vec3 _vertices;
+	Vec3 _Ew;
+	Vec3 _En;
+};
+
 class Grass : public Object
 {
 public:
@@ -27,6 +33,7 @@ private:
 	float _static_angle;
 
 	Vec3* _vertices;
+	GrassData* _glData;
 
 	Vec3 _G_static;
 	Vec3 _Ee_static[VERTICES_SIZE - 1];

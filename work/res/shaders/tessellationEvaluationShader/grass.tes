@@ -2,10 +2,15 @@
 
 layout(isolines, equal_spacing, ccw) in;
 
-// in vec3 tcsFragPos[];
+in vec3 tcsFragPos[];
+in vec3 tcsEw[];
+in vec3 tcsEn[];
 // in vec2 tcsTexCoord[];
 
-// out vec3 tesFragPos;
+out vec3 tesFragPos;
+out vec3 tesEw;
+out vec3 tesEn;
+
 // out vec2 tesTexCoord;
 
 // vec4 interpolateV4(in vec4 v0, in vec4 v1, in vec4 v2, in vec4 v3)
@@ -33,6 +38,17 @@ vec4 bezier(float u, vec4 p0, vec4 p1, vec4 p2, vec4 p3)
     return p;
 }
 
+vec3 bezierV3(float u, vec3 p0, vec3 p1, vec3 p2, vec3 p3)
+{
+    float B0 = (1.-u)*(1.-u)*(1.-u);
+    float B1 = 3.*u*(1.-u)*(1.-u);
+    float B2 = 3.*u*u*(1.-u);
+    float B3 = u*u*u;
+
+    vec3 p = B0*p0 + B1*p1 + B2*p2 + B3*p3;
+    return p;
+}
+
 // vec3 interpolateV3(in vec3 v0, in vec3 v1, in vec3 v2, in vec3 v3)
 // {
 //     vec3 a = mix(v0, v1, gl_TessCoord.x);
@@ -53,6 +69,8 @@ void main()
     gl_Position = bezier(u, gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position, gl_in[3].gl_Position);
     //gl_Position = curve(gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position, gl_in[3].gl_Position);
 
-    // tesFragPos = interpolateV3(tcsFragPos[0], tcsFragPos[1], tcsFragPos[2], tcsFragPos[3]);
+    tesFragPos = bezierV3(u, tcsFragPos[0], tcsFragPos[1], tcsFragPos[2], tcsFragPos[3]);
+    tesEw = bezierV3(u, tcsEw[0], tcsEw[1], tcsEw[2], tcsEw[3]);
+    tesEn = bezierV3(u, tcsEn[0], tcsEn[1], tcsEn[2], tcsEn[3]);
     // tesTexCoord = interpolateV2(tcsTexCoord[0], tcsTexCoord[1], tcsTexCoord[2], tcsTexCoord[3]);
 }

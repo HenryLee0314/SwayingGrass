@@ -2,23 +2,26 @@
 
 layout(vertices = 4) out;
 
-// in vec3 vsFragPos[];
+in vec3 vsFragPos[];
+in vec3 vsEw[];
+in vec3 vsEn[];
 // in vec2 vsTexCoord[];
 
-// out vec3 tcsFragPos[];
+out vec3 tcsFragPos[];
+out vec3 tcsEw[];
+out vec3 tcsEn[];
 // out vec2 tcsTexCoord[];
 
 void main(void)
 {
 	gl_TessLevelOuter[0] = 1;
 
-
-    //gl_TessLevelOuter[0] = 100.0;
     gl_TessLevelOuter[1] = 10;
-    // gl_TessLevelOuter[2] = 100.0;
-    // gl_TessLevelOuter[3] = 100.0;
+
 
     gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
-    // tcsFragPos[gl_InvocationID] = vsFragPos[gl_InvocationID];
+    tcsFragPos[gl_InvocationID] = vsFragPos[gl_InvocationID];
+    tcsEw[gl_InvocationID] = vsEw[gl_InvocationID];
+    tcsEn[gl_InvocationID] = vsEn[gl_InvocationID];
     // tcsTexCoord[gl_InvocationID] = vsTexCoord[gl_InvocationID];
 }

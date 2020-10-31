@@ -44,7 +44,7 @@ void Light::renderGUI()
 	float data[3] = {_position.x, _position.y, _position.z};
 	ImGui::Text("Light Position");
 	ImGui::SliderFloat(" X", &data[0], -5.0f, 5.0f);
-	// ImGui::SliderFloat(" Y", &data[1], 0.0f, 20.0f);
+	ImGui::SliderFloat(" Y", &data[1], 0.0f, 20.0f);
 	ImGui::SliderFloat(" Z", &data[2], -5.0f, 5.0f);
 	_position.x = data[0];
 	_position.y = data[1];
