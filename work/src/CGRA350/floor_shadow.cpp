@@ -3,6 +3,7 @@
 #include "grass_bundle.h"
 
 #include "shader_first_pass.h"
+#include "shader_second_pass.h"
 
 #include "opengl.hpp"
 
@@ -98,6 +99,7 @@ void FloorShadow::renderShadow()
 
 void FloorShadow::render()
 {
+	SecondPassShader::getInstance()->useFloorShader();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _depthMap);
 

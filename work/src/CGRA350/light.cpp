@@ -36,7 +36,7 @@ glm::mat4 Light::getProjectionMatrix()
 
 glm::mat4 Light::getViewMatirx()
 {
-	return glm::lookAt(_position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	return glm::lookAt(_position, glm::vec3(0.0f, -1000.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Light::renderGUI()

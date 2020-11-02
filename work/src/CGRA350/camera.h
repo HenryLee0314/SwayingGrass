@@ -1,5 +1,5 @@
-#ifndef CGRA350_CAMERA_3D_H
-#define CGRA350_CAMERA_3D_H
+#ifndef CAMERA_H
+#define CAMERA_H
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -33,6 +33,8 @@ public:
     virtual ~Camera();
 
     glm::mat4 GetViewMatrix();
+
+    glm::mat4 GetProjectionMatrix();
 
     inline float getZoom() {
         return _zoom;
@@ -80,4 +82,4 @@ protected:
 
 } // namespace CGRA350
 
-#endif // CGRA350_CAMERA_3D_H
+#endif // CAMERA_H

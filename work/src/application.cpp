@@ -28,37 +28,18 @@
 #include "floor.h"
 #include "light.h"
 #include "floor_shadow.h"
-#include "shader_second_pass.h"
+#include "main_camera.h"
 
 using namespace std;
 using namespace cgra;
 using namespace glm;
 using namespace CGRA350;
 
-// void basic_model::draw(const glm::mat4 &view, const glm::mat4 proj) {
-// 	mat4 modelview = view * modelTransform;
-
-// 	glUseProgram(shader); // load shader and variables
-// 	glUniformMatrix4fv(glGetUniformLocation(shader, "uProjectionMatrix"), 1, false, value_ptr(proj));
-// 	glUniformMatrix4fv(glGetUniformLocation(shader, "uModelViewMatrix"), 1, false, value_ptr(modelview));
-// 	glUniform3fv(glGetUniformLocation(shader, "uColor"), 1, value_ptr(color));
-
-// 	mesh.draw(); // draw
-// }
-
-
 Application::Application(GLFWwindow *window)
 	: m_window(window)
-	, _camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f))
 	, _grassShader(CGRA_SRCDIR "/res/shaders/vertexShader/grass.vs", CGRA_SRCDIR "/res/shaders/fragmentShader/grass.fs", CGRA_SRCDIR "/res/shaders/geometryShader/grass.gs", CGRA_SRCDIR "/res/shaders/tessellationControlShader/grass.tcs", CGRA_SRCDIR "/res/shaders/tessellationEvaluationShader/grass.tes")
 	, _fluidShader(CGRA_SRCDIR "/res/shaders/vertexShader/fluid.vs", CGRA_SRCDIR "/res/shaders/fragmentShader/fluid.fs")
 {
-
-	// OpenclManager::getInstance();
-
-	// OpenclTask task(CGRA_SRCDIR "/res/openCL/helloworld.cl");
-
-	// task.run();
 
 }
 
@@ -81,14 +62,13 @@ void Application::render() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	// projection matrix
-	mat4 proj = perspective(1.f, float(width) / height, 0.1f, 1000.f);
 
-	_camera.setYaw(m_yaw);
-	_camera.setPitch(m_pitch);
-	_camera.setDistance(m_distance);
+	MainCamera::getInstance()->setYaw(m_yaw);
+	MainCamera::getInstance()->setPitch(m_pitch);
+	MainCamera::getInstance()->setDistance(m_distance);
 
-	mat4 view = _camera.GetViewMatrix();
+	mat4 view = MainCamera::getInstance()->GetViewMatrix();
+	mat4 proj = MainCamera::getInstance()->GetProjectionMatrix();
 
 	static glm::mat4 model = glm::mat4(1.0f);
 
@@ -100,8 +80,6 @@ void Application::render() {
 
 	CGRA_ACTIVITY_START(CGRA350);
 
-	// draw the model
-	//m_model.draw(view, proj);
 	FluidGrid::getInstance()->update();
 
 	GrassBundle::getInstance()->update();
@@ -120,7 +98,7 @@ void Application::render() {
 	_grassShader.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
 	_grassShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
 	_grassShader.setVec3("lightPos", Light::getInstance()->getPosition());
-	_grassShader.setVec3("viewPos", _camera.getPosition());
+	_grassShader.setVec3("viewPos", MainCamera::getInstance()->getPosition());
 	GrassBundle::getInstance()->render();
 	CGRA_ACTIVITY_END(GRASS_RENDER);
 
@@ -135,12 +113,11 @@ void Application::render() {
 	_fluidShader.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
 	_fluidShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
 	_fluidShader.setVec3("lightPos", Light::getInstance()->getPosition());
-	_fluidShader.setVec3("viewPos", _camera.getPosition());
+	_fluidShader.setVec3("viewPos", MainCamera::getInstance()->getPosition());
 	FluidGrid::getInstance()->render();
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 
-	SecondPassShader::getInstance()->useFloorShader(view, proj, _camera.getPosition());
 	FloorShadow::getInstance()->render();
 
 	CGRA_ACTIVITY_END(CGRA350);

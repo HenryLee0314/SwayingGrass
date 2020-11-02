@@ -6,8 +6,6 @@ set(sources
     "vector.cpp"
     "texture.h"
     "texture.cpp"
-    "camera.h"
-    "camera.cpp"
     "cgraFile.cpp"
     "cgraFile.h"
     "cgra_heap_calculator.h"

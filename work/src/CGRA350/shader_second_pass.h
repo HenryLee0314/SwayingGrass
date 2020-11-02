@@ -10,7 +10,7 @@ class SecondPassShader
 public:
 	static SecondPassShader* getInstance();
 
-	void useFloorShader(glm::mat4 view, glm::mat4 proj, glm::vec3 viewPos);
+	void useFloorShader();
 
 private:
 	SecondPassShader();

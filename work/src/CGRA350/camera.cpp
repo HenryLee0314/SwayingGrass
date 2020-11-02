@@ -39,6 +39,11 @@ glm::mat4 Camera::GetViewMatrix()
     return glm::lookAt(_position, glm::vec3(0.0f, 0.0f, 0.0f), _up);
 }
 
+glm::mat4 Camera::GetProjectionMatrix()
+{
+    return glm::perspective(1.f, float(1280/*width*/) / 800/*height*/, 0.1f, 1000.f);
+}
+
 // void Camera::ProcessKeyboard(CameraMovement direction, float deltaTime)
 // {
 //     float velocity = _movementSpeed * deltaTime;

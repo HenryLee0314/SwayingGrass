@@ -37,6 +37,11 @@ set(sources
     "opencl_task.h"
     "opencl_task.cpp"
 
+    "camera.h"
+    "camera.cpp"
+    "main_camera.h"
+    "main_camera.cpp"
+
 	"CMakeLists.txt"
 )
 

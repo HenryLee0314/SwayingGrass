@@ -8,10 +8,8 @@
 // project
 #include "opengl.hpp"
 #include "cgra/cgra_mesh.hpp"
-#include "skeleton_model.hpp"
 
 #include "shader.h"
-#include "camera.h"
 
 // Basic model that holds the shader, mesh and transform for drawing.
 // Can be copied and modified for adding in extra information for drawing
@@ -48,8 +46,6 @@ private:
 	bool m_show_axis = false;
 	bool m_show_grid = false;
 	bool m_showWireframe = false;
-
-	CGRA350::Camera _camera;
 
 	// geometry
 	//basic_model m_model;
