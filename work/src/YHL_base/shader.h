@@ -30,7 +30,7 @@ public:
 
     virtual ~Shader();
 
-    void use();
+    virtual void use();
 
     inline unsigned int getId() {
         return _id;

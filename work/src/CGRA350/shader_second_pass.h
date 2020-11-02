@@ -12,6 +12,8 @@ public:
 
 	void useFloorShader();
 
+	void renderGUI();
+
 private:
 	SecondPassShader();
 	virtual ~SecondPassShader();

@@ -29,6 +29,7 @@
 #include "light.h"
 #include "floor_shadow.h"
 #include "main_camera.h"
+#include "shader_grass.h"
 
 using namespace std;
 using namespace cgra;
@@ -37,7 +38,6 @@ using namespace CGRA350;
 
 Application::Application(GLFWwindow *window)
 	: m_window(window)
-	, _grassShader(CGRA_SRCDIR "/res/shaders/vertexShader/grass.vs", CGRA_SRCDIR "/res/shaders/fragmentShader/grass.fs", CGRA_SRCDIR "/res/shaders/geometryShader/grass.gs", CGRA_SRCDIR "/res/shaders/tessellationControlShader/grass.tcs", CGRA_SRCDIR "/res/shaders/tessellationEvaluationShader/grass.tes")
 	, _fluidShader(CGRA_SRCDIR "/res/shaders/vertexShader/fluid.vs", CGRA_SRCDIR "/res/shaders/fragmentShader/fluid.fs")
 {
 
@@ -90,17 +90,10 @@ void Application::render() {
 	glViewport(0, 0, width, height);
 
     CGRA_ACTIVITY_START(GRASS_RENDER);
-	_grassShader.use();
-	_grassShader.setMat4("model", model);
-	_grassShader.setMat4("view", view);
-	_grassShader.setMat4("projection", proj);
-
-	_grassShader.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
-	_grassShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
-	_grassShader.setVec3("lightPos", Light::getInstance()->getPosition());
-	_grassShader.setVec3("viewPos", MainCamera::getInstance()->getPosition());
+    GrassShader::getInstance()->use();
 	GrassBundle::getInstance()->render();
-	CGRA_ACTIVITY_END(GRASS_RENDER);
+	CGRA_ACTIVITY_END(GRASS_RENDER);	
+
 
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -145,15 +138,21 @@ void Application::renderGUI() {
 	if (ImGui::Button("Screenshot")) rgba_image::screenshot(true);
 
 	ImGui::Separator();
+
 	Light::getInstance()->renderGUI();
+
 	ImGui::Separator();
 
-	// example of how to use input boxes
 	GrassParameters::getInstance()->renderGUI();
+
+	ImGui::Separator();
 
 	FluidGrid::getInstance()->renderGUI();
 
-	// finish creating window
+	ImGui::Separator();
+
+	GrassShader::getInstance()->renderGUI();
+
 	ImGui::End();
 }
 

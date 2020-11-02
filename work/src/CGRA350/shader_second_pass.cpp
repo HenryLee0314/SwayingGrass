@@ -26,6 +26,11 @@ SecondPassShader::~SecondPassShader()
 
 }
 
+void SecondPassShader::renderGUI()
+{
+
+}
+
 void SecondPassShader::useFloorShader()
 {
 	glm::mat4 model = glm::mat4(1.0);

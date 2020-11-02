@@ -86,6 +86,11 @@ void GrassBundle::update()
 	CGRA_ACTIVITY_END(GRASS_UPDATE);
 }
 
+void GrassBundle::render()
+{
+	Object::render();
+}
+
 GrassBundle::~GrassBundle()
 {
 

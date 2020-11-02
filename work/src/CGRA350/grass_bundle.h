@@ -13,6 +13,8 @@ public:
 
 	virtual void update();
 
+	virtual void render();
+
 private:
 	GrassBundle(Object* parent = nullptr);
 	virtual ~GrassBundle();

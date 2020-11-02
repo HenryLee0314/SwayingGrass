@@ -42,6 +42,9 @@ set(sources
     "main_camera.h"
     "main_camera.cpp"
 
+    "shader_grass.h"
+    "shader_grass.cpp"
+
 	"CMakeLists.txt"
 )
 
