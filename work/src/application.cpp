@@ -153,6 +153,10 @@ void Application::renderGUI() {
 
 	GrassShader::getInstance()->renderGUI();
 
+	ImGui::Separator();
+
+	FloorShadow::getInstance()->renderGUI();
+
 	ImGui::End();
 }
 

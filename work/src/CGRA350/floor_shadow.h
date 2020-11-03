@@ -22,6 +22,8 @@ public:
 
 	glm::mat4 getViewMatirx(glm::vec3 lightPosition);
 
+	void shadowDebug();
+
 protected:
 	FloorShadow();
 	virtual ~FloorShadow();
@@ -33,6 +35,12 @@ protected:
 private:
 	uint32_t _depthMapFBO;
 	uint32_t _depthMap;
+
+	bool _renderShadow;
+	bool _shadowDebug;
+
+	float _nearPlane;
+	float _farPlane;
 };
 
 } // namespace CGRA350

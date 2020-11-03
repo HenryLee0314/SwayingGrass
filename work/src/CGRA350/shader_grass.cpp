@@ -22,7 +22,7 @@ GrassShader* GrassShader::getInstance()
 
 GrassShader::GrassShader(const char* vertexPath, const char* fragmentPath, const char* geometryPath, const char* tessellationControlPath, const char* tessellationEvaluationPath)
 	: Shader(vertexPath, fragmentPath, geometryPath, tessellationControlPath, tessellationEvaluationPath)
-	, _ambientStrength(0.1)
+	, _ambientStrength(0.5)
 	, _diffuseStrength(1)
 	, _specularStrength(0.5)
 	, _specularPower(5)

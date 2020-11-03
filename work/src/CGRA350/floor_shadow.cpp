@@ -11,6 +11,8 @@
 #include "cgra_heap_calculator.h"
 #include "cgra_time_calculator.h"
 
+#include "cgra/cgra_gui.hpp"
+
 namespace CGRA350 {
 
 #ifdef __APPLE__
@@ -32,8 +34,7 @@ FloorShadow* FloorShadow::getInstance()
 
 glm::mat4 FloorShadow::getProjectionMatrix()
 {
-	GLfloat near_plane = 0.01f, far_plane = 1000.0f;
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, _nearPlane, _farPlane);
 	return lightProjection;
 }
 
@@ -46,6 +47,10 @@ glm::mat4 FloorShadow::getViewMatirx(glm::vec3 lightPosition)
 FloorShadow::FloorShadow()
 	: _depthMapFBO(0)
 	, _depthMap(0)
+	, _nearPlane(0.01f)
+	, _farPlane(1000.0f)
+	, _renderShadow(true)
+	, _shadowDebug(false)
 {
 
 	glGenFramebuffers(1, &_depthMapFBO);
@@ -74,9 +79,49 @@ FloorShadow::~FloorShadow()
 
 }
 
+void FloorShadow::shadowDebug()
+{
+	static Shader shadowDebugShader(CGRA_SRCDIR "/res/shaders/vertexShader/shadow_debug.vs", CGRA_SRCDIR "/res/shaders/fragmentShader/shadow_debug.fs");
+	static unsigned int quadVAO = 0;
+	static unsigned int quadVBO;
+	if (quadVAO == 0)
+	{
+		float quadVertices[] = {
+			// positions        // texture Coords
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		};
+		// setup plane VAO
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &quadVBO);
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	}
+
+	if (_shadowDebug) {
+		shadowDebugShader.use();
+		shadowDebugShader.setFloat("near_plane", _nearPlane);
+		shadowDebugShader.setFloat("far_plane", _farPlane);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, _depthMap);
+
+		glBindVertexArray(quadVAO);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindVertexArray(0);
+	}
+}
+
 void FloorShadow::renderGUI()
 {
-
+	ImGui::Checkbox("Render Shadow", &_renderShadow);
+	ImGui::Checkbox("Debug Shadow", &_shadowDebug);
 }
 
 void FloorShadow::renderShadow()
@@ -89,8 +134,8 @@ void FloorShadow::renderShadow()
 
 	FirstPassShader::getInstance()->useGrassShader();
 	GrassBundle::getInstance()->render();
-    FirstPassShader::getInstance()->useFloorShader();
-    Floor::getInstance()->render();
+	FirstPassShader::getInstance()->useFloorShader();
+	Floor::getInstance()->render();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -99,11 +144,15 @@ void FloorShadow::renderShadow()
 
 void FloorShadow::render()
 {
-	SecondPassShader::getInstance()->useFloorShader();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _depthMap);
+	if (_renderShadow) {
+		SecondPassShader::getInstance()->useFloorShader();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, _depthMap);
 
-	Floor::getInstance()->render();
+		Floor::getInstance()->render();
+	}
+
+	shadowDebug();
 }
 
 } // namespace CGRA350
