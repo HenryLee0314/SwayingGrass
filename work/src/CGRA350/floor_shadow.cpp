@@ -13,6 +13,8 @@
 
 #include "cgra/cgra_gui.hpp"
 
+#include "light.h"
+
 namespace CGRA350 {
 
 #ifdef __APPLE__
@@ -32,23 +34,9 @@ FloorShadow* FloorShadow::getInstance()
 	return _instance;
 }
 
-glm::mat4 FloorShadow::getProjectionMatrix()
-{
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, _nearPlane, _farPlane);
-	return lightProjection;
-}
-
-glm::mat4 FloorShadow::getViewMatirx(glm::vec3 lightPosition)
-{
-	glm::mat4 lightView = glm::lookAt(lightPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	return lightView;
-}
-
 FloorShadow::FloorShadow()
 	: _depthMapFBO(0)
 	, _depthMap(0)
-	, _nearPlane(0.01f)
-	, _farPlane(1000.0f)
 	, _renderShadow(true)
 	, _shadowDebug(false)
 {
@@ -107,8 +95,8 @@ void FloorShadow::shadowDebug()
 
 	if (_shadowDebug) {
 		shadowDebugShader.use();
-		shadowDebugShader.setFloat("near_plane", _nearPlane);
-		shadowDebugShader.setFloat("far_plane", _farPlane);
+		shadowDebugShader.setFloat("near_plane", Light::getInstance()->getNearPlane());
+		shadowDebugShader.setFloat("far_plane", Light::getInstance()->getFarPlane());
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, _depthMap);
 

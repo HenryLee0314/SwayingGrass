@@ -18,7 +18,9 @@ Light* Light::getInstance()
 }
 
 Light::Light()
-: _position(3.0, 10.0, 3.0)
+	: _position(3.0, 10.0, 3.0)
+	, _nearPlane(0.01f)
+	, _farPlane(1000.0f)
 {
 
 }
@@ -30,8 +32,7 @@ Light::~Light()
 
 glm::mat4 Light::getProjectionMatrix()
 {
-	GLfloat near_plane = 0.01f, far_plane = 1000.0f;
-	return glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane);
+	return glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, _nearPlane, _farPlane);
 }
 
 glm::mat4 Light::getViewMatirx()

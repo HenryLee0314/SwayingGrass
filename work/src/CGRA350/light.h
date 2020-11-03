@@ -20,6 +20,14 @@ public:
 
 	glm::mat4 getProjectionMatrix();
 
+	inline float getNearPlane() {
+		return _nearPlane;
+	}
+
+	inline float getFarPlane() {
+		return _farPlane;
+	}
+
 private:
 	Light();
 	virtual ~Light();
@@ -28,6 +36,9 @@ private:
 
 private:
 	static Light* _instance;
+
+	float _nearPlane;
+	float _farPlane;
 
 	glm::vec3 _position;
 };

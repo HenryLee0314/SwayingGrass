@@ -18,10 +18,6 @@ public:
 
 	void renderShadow();
 
-	glm::mat4 getProjectionMatrix();
-
-	glm::mat4 getViewMatirx(glm::vec3 lightPosition);
-
 	void shadowDebug();
 
 protected:
@@ -39,8 +35,7 @@ private:
 	bool _renderShadow;
 	bool _shadowDebug;
 
-	float _nearPlane;
-	float _farPlane;
+
 };
 
 } // namespace CGRA350
