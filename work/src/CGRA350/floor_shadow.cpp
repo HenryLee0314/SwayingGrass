@@ -119,12 +119,12 @@ void FloorShadow::renderShadow()
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
-
-	FirstPassShader::getInstance()->useGrassShader();
-	GrassBundle::getInstance()->render();
-	FirstPassShader::getInstance()->useFloorShader();
-	Floor::getInstance()->render();
-
+	if (_renderShadow) {
+		FirstPassShader::getInstance()->useGrassShader();
+		GrassBundle::getInstance()->render();
+		// FirstPassShader::getInstance()->useFloorShader();
+		// Floor::getInstance()->render();
+	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	CGRA_ACTIVITY_END(TWO_PASS);
@@ -132,13 +132,12 @@ void FloorShadow::renderShadow()
 
 void FloorShadow::render()
 {
-	if (_renderShadow) {
-		SecondPassShader::getInstance()->useFloorShader();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _depthMap);
 
-		Floor::getInstance()->render();
-	}
+	SecondPassShader::getInstance()->useFloorShader();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _depthMap);
+	Floor::getInstance()->render();
+
 
 	shadowDebug();
 }
