@@ -18,7 +18,7 @@ Light* Light::getInstance()
 }
 
 Light::Light()
-	: _position(3.0, 10.0, 3.0)
+	: _position(0.01, 20.0, 0.01)
 	, _nearPlane(0.01f)
 	, _farPlane(1000.0f)
 {
@@ -32,7 +32,8 @@ Light::~Light()
 
 glm::mat4 Light::getProjectionMatrix()
 {
-	return glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, _nearPlane, _farPlane);
+	// return glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, _nearPlane, _farPlane);
+	return glm::perspective(1.f, float(3000 /*width*/) / 3000 /*height*/, 0.1f, 1000.f);
 }
 
 glm::mat4 Light::getViewMatirx()
@@ -45,7 +46,7 @@ void Light::renderGUI()
 	float data[3] = {_position.x, _position.y, _position.z};
 	ImGui::Text("Light Position");
 	ImGui::SliderFloat(" X", &data[0], -5.0f, 5.0f);
-	ImGui::SliderFloat(" Y", &data[1], 0.0f, 20.0f);
+	ImGui::SliderFloat(" Y", &data[1], 0.0f, 30.0f);
 	ImGui::SliderFloat(" Z", &data[2], -5.0f, 5.0f);
 	_position.x = data[0];
 	_position.y = data[1];
